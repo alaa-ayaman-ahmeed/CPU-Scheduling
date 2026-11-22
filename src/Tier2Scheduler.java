@@ -15,27 +15,37 @@ public class Tier2Scheduler {
 
     // Add a process coming from Tier 1
     public void addTier1Process(
-            ACSProcess process, int currentTime) {
+        ACSProcess process, int currentTime) {
 
-        if (process == null) {
-            throw new IllegalArgumentException(
-                    "Process cannot be null");
-        }
-
-        // Prevent duplicate insertion
-        if (readyQueue.contains(process)) {
-            throw new IllegalArgumentException(
-                    "Process is already in Tier 2");
-        }
-
-        process.tier2EntryTime = currentTime;
-
-        readyQueue.add(process);
-
-        System.out.println(
-                process.processId + " entered Tier 2 at time "
-                        + currentTime);
+    if (process == null) {
+        throw new IllegalArgumentException(
+            "Process cannot be null"
+        );
     }
+
+    if (process.remainingTime <= 0) {
+        throw new IllegalArgumentException(
+            "Process must have remaining time"
+        );
+    }
+
+    if (readyQueue.contains(process)) {
+        throw new IllegalArgumentException(
+            "Process is already in Tier 2"
+        );
+    }
+
+    // Record when the process entered Tier 2
+    process.tier2EntryTime = currentTime;
+
+    // Add the same process object to Tier 2
+    readyQueue.add(process);
+
+    System.out.println(
+        process.processId +
+        " entered Tier 2 at time " + currentTime
+    );
+}
 
     // Select the process with the highest effective priority
     public ACSProcess selectNext(
@@ -80,7 +90,9 @@ public class Tier2Scheduler {
                     "Invalid process");
         }
 
-        process.startTime = startTime;
+        if (process.startTime == -1) {
+    process.startTime = startTime;
+}
 
         // Non-preemptive: execute ALL remaining burst time
         int finishTime =
