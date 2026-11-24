@@ -20,7 +20,7 @@ public class Tier1IntegrationTest {
         System.out.println("\nStarting Tier 2:");
 
         Tier2Scheduler.PriorityCalculator aging =
-            (p, time) -> p.initialPriority;
+        new AgingPriorityCalculator(4, 1);
 
         while (!tier2.isEmpty()) {
 
